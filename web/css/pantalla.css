@@ -1,0 +1,46 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 7/04/2017, 09:13:30 AM
+    Author     : Luis Parra
+*/
+html, body{
+    height:100%;
+    width:100%;
+    padding:0;
+    margin:0;
+}
+.row{margin-bottom: 5px;}
+
+input[type=text]{
+    margin-bottom: 15px;
+}
+#fecha{height: 43px;}
+#copialinea{display: none;}
+#oculto,#oculto2{display: none;}
+#tablaintegrantes{display: none;}
+blockquote{display: none;}
+#tablatotal1{display: none;}
+#tablatotal2{display: none;}
+#tablaproyecto{display: none;}
+#tablatrabajo{display: none; min-width: 100%;}
+#tablaasistente{display: none;}
+#tablaponente{display: none;}
+#tablaconocimiento{display: none;}
+#tablacolciencias{display: none;
+                  font-size: 10pt;}
+#tablag{display: none;}
+
+
+#capa1{ 
+    position:absolute;
+    z-index:1;
+}
+#capa2{
+    position:inherit;
+    z-index:0;
+}
+/*para ver la info display block*/

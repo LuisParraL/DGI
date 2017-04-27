@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="materialize/css/materialize.min.css" rel="stylesheet" type="text/css"/>
+        <script src="js/jquery-3.1.1.min.js" type="text/javascript"></script>
+        <script type="text/javascript" src="materialize/js/materialize.min.js"></script>         
+    </head>
+    <body>
+        <style type="text/css">
+            #capa1{ position:absolute;
+                    z-index:1;
+            }
+            #capa2{
+                position:absolute;
+                z-index:0;
+            }
+        </style>        
+        <div class="container" id="capa2">
+            <div class="row">
+                <div id="contenedor" class="" style="overflow-x: auto;" onscroll="myFunction()">
+                    <table class="table" id="tab_logic">
+                        <thead>
+                            <tr >
+                                <th class="text-center">
+                                    #
+                                </th>
+                                <th class="" style="min-width: 250px;">
+                                    Nombre
+                                </th>
+                                <th class="" style="min-width: 130px;">
+                                    Cédula
+                                </th>
+                                <th class="" style="min-width: 200px;">
+                                    Fecha de Expedición (ID)
+                                </th>
+                                <th class="" style="min-width: 160px;">
+                                    Estado Civil
+                                </th>
+                                <th style="min-width: 200px;">
+                                    Correspondencia Física
+                                </th>
+                                <th class="" style="min-width: 250px;">
+                                    Correo
+                                </th>
+                                <th class="" style="min-width: 130px;">
+                                    Teléfono
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id='addr0'>
+                                <td>
+                                    1
+                                </td>
+                        <input type="text" name='name0' id="name0" class="convert_uppercase" disabled/>
+                        </td>
+                        <td>
+                            <input type="number" name='cedula0' id="cedula0" min="0" class="validate_number"/>
+                        </td>
+                        <td>
+                            <input type="date" id="fecha_exp0" class="datepicker"/>
+                        </td>
+                        <td id="capa1">
+                            <select id="estado_civil0" multiple>
+                                <option selected disabled></option>
+                                <option>Soltero/a</option>
+                                <option>Comprometido/a</option>
+                                <option>Casado/a</option>
+                                <option>Divorciado/a</option>
+                                <option>Viudo/a</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="text" name='correspondencia0' id="correspondencia0" class="validate_text"/>
+                        </td>
+                        <td>
+                            <input type="email" name='correo0' id="correo0" class="validate" disabled="" />
+                        </td>
+                        <td>
+                            <input type="number" name='telefono0' disabled id="telefono0" min="0" class="validate_number"/>
+                        </td>
+                        </tr>
+                        <tr id='addr1'></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <a id="add_row" class="btn btn-default pull-left">Add Row</a><a id='delete_row' class="pull-right btn btn-default">Delete Row</a>
+        </div>
+        <p id="demo"></p>
+        <script>
+            $(document).ready(function () {
+                $("select").material_select();
+                var i = 1;
+                $("#add_row").click(function () {
+                    $('#addr' + i).html("<td>" + (i + 1) + "</td>\n\
+                    <td><input name='name" + i + "' type='text' placeholder='Name' class='form-control input-md'  /> </td>\n\
+                    <td><input  name='mail" + i + "' type='text' placeholder='Mail'  class='form-control input-md'></td><td><input  name='mobile" + i + "' type='text' placeholder='Mobile'  class='form-control input-md'></td>");
+
+                    $('#tab_logic').append('<tr id="addr' + (i + 1) + '"></tr>');
+                    i++;
+                });
+                $("#delete_row").click(function () {
+                    if (i > 1) {
+                        $("#addr" + (i - 1)).html('');
+                        i--;
+                    }
+                });
+
+//                $('#contenedor').scroll(function () {
+//                    $("#capa1").css("position", "inherit");
+//                    $("#capa1").css("z-index", "1");
+//                });
+//                if ($("table").scrollLeft===0) {
+//                    console.log($("#contenedor").scrollLeft);
+//                }
+            });
+                function myFunction() {
+                    var elmnt = document.getElementById("contenedor");
+                    var x = elmnt.scrollLeft;
+                    if(x>0) {
+                      $("#capa1").css("position", "inherit");
+                      $("#capa1").css("z-index", "1");                        
+                    }
+                    if(x===0){
+                      $("#capa1").css("position", "absolute");
+                      $("#capa1").css("z-index", "1");                         
+                    }
+                    var y = elmnt.scrollTop;
+                    document.getElementById("demo").innerHTML = "Horizontally: " + x + "px<br>Vertically: " + y + "px";
+                }            
+        </script>
+    </body>
+</html>
