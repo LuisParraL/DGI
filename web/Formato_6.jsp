@@ -63,8 +63,8 @@ and open the template in the editor.
             <div class="nav-wrapper">
                 <a href="#!" class="brand-logo"><img class="responsive-img" src="http://investigaciones.unillanos.edu.co/images/Logo_web.png"></a>
                 <ul class="right hide-on-med-and-down">
-                    <li><a class="black-text" href="perfil.html">Opción 1</a></li>
-                    <li><a class="black-text" href="perfil.html">Opción 2</a></li>
+                    <li><a class="black-text" href="Formato_4.jsp">Opción 1</a></li>
+                    <li><a class="black-text" href="Formato_4.jsp">Opción 2</a></li>
                     <!-- Dropdown Trigger -->
                     <li><a class="dropdown-button black-text" href="#!" data-activates="dropdown1">Desplegar<i class="material-icons right">arrow_drop_down</i></a></li>
                 </ul>
@@ -808,6 +808,6 @@ and open the template in the editor.
         outt.print("<div class='container' style='text-align: center; color: black;'>"
                 + "Primero Ingrese</div>");
         response.sendRedirect("index.jsp");
-        outt.close();
+//        outt.close();
     }
 %>

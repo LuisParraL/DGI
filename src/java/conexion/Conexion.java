@@ -7,7 +7,7 @@ package conexion;
 
 /**
  *
- * @author Sandra
+ * @author Luis Parra
  */
 import java.sql.Connection;
 import java.sql.DriverManager;

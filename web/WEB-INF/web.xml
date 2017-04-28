@@ -15,6 +15,10 @@
         <servlet-name>Sesion</servlet-name>
         <servlet-class>controlador.Sesion</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>Logout</servlet-name>
+        <servlet-class>controlador.Logout</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Controlador_F04</servlet-name>
         <url-pattern>/Grupos</url-pattern>
@@ -26,6 +30,10 @@
     <servlet-mapping>
         <servlet-name>Sesion</servlet-name>
         <url-pattern>/sesion</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Logout</servlet-name>
+        <url-pattern>/Logout</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

@@ -8,6 +8,7 @@ package controlador;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,8 +16,9 @@ import javax.servlet.http.HttpSession;
 
 /**
  *
- * @author Sandra
+ * @author Luis Parra
  */
+@WebServlet(name = "Logout", urlPatterns = {"/Logout"})
 public class Logout extends HttpServlet {
 
     /**
@@ -31,17 +33,19 @@ public class Logout extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
         try (PrintWriter out = response.getWriter()) {
+            response.setContentType("text/html;charset=UTF-8");
 
-            HttpSession sesion = request.getSession();
-            sesion.invalidate();
-            out.print("<div class='container' style='text-align: center; color: black;'>"
-                + "Ha cerrado sesión</div>");
-            request.getRequestDispatcher("index.jsp").include(request, response);  
-            out.close();
+                HttpSession sesion = request.getSession();
+                sesion.invalidate();
+                out.print("<div class='container' style='text-align: center; color: black;'>"
+                        + "Ha cerrado sesión</div>");
+                request.getRequestDispatcher("index.jsp").include(request, response);
+                out.close();
+            }catch (IOException e) {
+                System.out.println("Problema PrintWriter Logout "+e.getMessage());
+            }
         }
-    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

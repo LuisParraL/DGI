@@ -60,6 +60,6 @@
         out.print("<div class='container' style='text-align: center; color: black;'>"
                 + "Primero Ingrese</div>");
         response.sendRedirect("index.jsp");
-        out.close();
+//        out.close();
     }
 %>

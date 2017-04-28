@@ -7,7 +7,7 @@ package dao;
 
 /**
  *
- * @author Sandra
+ * @author Luis Parra
  */
 public class Integrantes {
     String cedula, nombre, formacion, correo;

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 /**
  *
- * @author Sandra
+ * @author Luis Parra
  */
 public class ProyectoDAO {
 
@@ -223,11 +223,12 @@ public class ProyectoDAO {
         String[] auxDatos = datos;
         System.out.println("----- " + auxDatos[0]);
         String sql = "SELECT cedula FROM integrantes WHERE nombre='" + auxDatos[1] + "'";
-        String sql2 = "SELECT max(idproyecto) FROM proyectos";
+        String sql2 = "select secuencia_pro.nextval from dual";
         String cedula = "";
         Long id = 0L;
         try {
             rs = s.executeQuery(sql);
+
             while (rs.next()) {
                 cedula = rs.getString("cedula");
                 System.out.println("Entro cedula" + cedula + " ///");
@@ -270,7 +271,7 @@ public class ProyectoDAO {
         int z = 0;
         String ced = cedula;
         String prod = infoG[4];
-        Long id2 = (id+1);
+        Long id2 = id;
         System.out.println("Cedula: " + cedula + " id:" + id + " -->" + infoG[2]);
         try {
             //rs=s.executeQuery(sqlId);
@@ -298,10 +299,7 @@ public class ProyectoDAO {
             System.out.println("Problema registrar Proyecto en Curso " + e.getMessage());
         }
         registrarProyectoIntegrante(id2, ced);
-        for (int k=0; k<prod.length(); k++) {
-            String [] esp = prod.split("-"); //separar los resultados esperados por -
-            registrarResultadoEsperado(id2, esp[k]);
-        }
+        registrarResultadoEsperado(id2, prod);
     }
 
     public void registrarProyectoIntegrante(Long id, String ced) {
@@ -328,9 +326,11 @@ public class ProyectoDAO {
         int z = 0;
         try {
             z = s.executeUpdate("INSERT INTO resultados_esperados "
+                    + "(idresultado,"
                     + "resultado_producto,"
                     + "idproyecto) values "
-                    + "('" + producto + "',"
+                    + "(secuencia_resultados.nextval,"
+                    + "'" + producto + "',"
                     + "" + idp + ")");
             if (z == 1) {
                 System.out.println("se ha registrado el resultado esperado");
@@ -454,13 +454,13 @@ public class ProyectoDAO {
     }
 //************************************************************************************************************
 
-    public void procesarEventosGeneral (String infoEventoG) {
-        String[] filas = infoEventoG.split(">>");
+    public void procesarEventosPonente(String infoEventoP) {
+        String[] filas = infoEventoP.split(">>");
         for (int i = 0; i < filas.length; i++) {
             String[] datos = filas[i].split(";;");
-            String[] integ = datos[2].split(",");
+            String[] integ = datos[2].split(";");
             Long id = obtenerId2();
-            registrarEventoGeneral(id, datos);
+            registrarEventoPonente(id, datos);
             for (int j = 0; j < integ.length; j++) {
                 buscarCedulas2(id, integ[j]);
             }
@@ -469,7 +469,7 @@ public class ProyectoDAO {
 
     public Long obtenerId2() {
         Long next = 0L;
-        String sql = "SELECT max(idevento) from eventos";
+        String sql = "SELECT secuencia_eventos.nextval from dual";
         try {
             rs = s.executeQuery(sql);
             while (rs.next()) {
@@ -477,7 +477,7 @@ public class ProyectoDAO {
                 System.out.println("Entro nextval ponenente");
             }
         } catch (Exception e) {
-            System.out.println("Problema al traer el serial eventos  " + e.getMessage());
+            System.out.println("Problema al traer el nextval eventos p " + e.getMessage());
         } finally {
             try {
                 if (rs != null) {
@@ -485,7 +485,7 @@ public class ProyectoDAO {
                     System.out.println("Resulset cerrado id p");
                 }
             } catch (Exception e) {
-                System.out.println("Problema cerrar resulset eventos " + e.getMessage());
+                System.out.println("Problema cerrar resulset p " + e.getMessage());
             }
         }
         return next;
@@ -494,29 +494,29 @@ public class ProyectoDAO {
     public void buscarCedulas2(Long id, String integrante) {
         String sql = "SELECT cedula FROM integrantes WHERE nombre='" + integrante + "'";
         String cedula = "";
-        Long aux = (id+1); //sumo 1
+        Long aux = id;
         try {
             rs = s.executeQuery(sql);
             while (rs.next()) {
                 cedula = rs.getString("cedula");
-                System.out.println("Entro cédula integrantes eventos g-->" + cedula);
+                System.out.println("Entro cédula integrantes eventos p-->" + cedula);
             }
         } catch (Exception e) {
-            System.out.println("Problema al obtener cedula g " + e.getMessage());
+            System.out.println("Problema al obtener cedula p " + e.getMessage());
         } finally {
             try {
                 if (rs != null) {
                     rs.close();
-                    System.out.println("Resulset cerrado cédula evento g");
+                    System.out.println("Resulset cerrado cédula evento p");
                 }
             } catch (Exception e) {
-                System.out.println("Problema cerrar resulset ced. event. g. " + e.getMessage());
+                System.out.println("Problema cerrar resulset ced. event. p. " + e.getMessage());
             }
         }
         registrarEventoIntegrante2(aux, cedula);
     }
 
-    public void registrarEventoGeneral (Long next, String[] infoE) {
+    public void registrarEventoPonente(Long next, String[] infoE) {
         int z = 0;
         try {
             z = s.executeUpdate("INSERT INTO eventos "
@@ -524,7 +524,7 @@ public class ProyectoDAO {
                     + "tipo_evento,"
                     + "nombre_evento,"
                     + "participacion,"
-                    + "producto,"
+                    + "productos,"
                     + "nombre_ponencia,"
                     + "entidad_organizadora,"
                     + "entidad_financiadora,"
@@ -532,8 +532,7 @@ public class ProyectoDAO {
                     + "pais,"
                     + "ciudad,"
                     + "fecha_inicio,"
-                    + "fecha_termina,"
-                    + "yeare) values "
+                    + "fecha_termina) values "
                     + "(" + next + ","
                     + "'" + infoE[0] + "',"
                     + "'" + infoE[1] + "',"
@@ -546,13 +545,12 @@ public class ProyectoDAO {
                     + "'" + infoE[9] + "',"
                     + "'" + infoE[10] + "',"
                     + "'" + infoE[11] + "',"
-                    + "'" + infoE[12] + "',"
-                    + "'" + infoE[13] + "')");
+                    + "'" + infoE[12] + "')");
             if (z == 1) {
-                System.out.println("Se ha registrado el evento general");
+                System.out.println("Se ha registrado el evento p");
             }
         } catch (Exception e) {
-            System.out.println("Error al registrar el evento general " + e.getMessage());
+            System.out.println("Error al registrar el evento p " + e.getMessage());
         }
     }
 
@@ -565,10 +563,10 @@ public class ProyectoDAO {
                     + "(" + id + ","
                     + "'" + ced + "')");
             if (z == 1) {
-                System.out.println("Registrado correctamente la relación evento integrante g");
+                System.out.println("Registrado correctamente la relación evento integrante p");
             }
         } catch (Exception e) {
-            System.out.println("Problema relacionar evento integrante g " + e.getMessage());
+            System.out.println("Problema relacionar evento integrante p " + e.getMessage());
         }
     }
 //******************************************************************************************************************
@@ -577,28 +575,28 @@ public class ProyectoDAO {
         String[] filas = infoCono.split(">>");
         for (int i = 0; i < filas.length; i++) {
             String[] datos = filas[i].split(";;");
-            String[] integ = datos[3].split(","); //al momento de registrar varios autores deben de separarlos por ,
+            String[] integ = datos[3].split(","); //al momento de registrar varios autores deben de separarlos por ;
             System.out.println("Integrantes NC-->" + datos[3]);
             Long id = obtenerId3();                 //y coincider el nombre exactamente con el ingresado anteriormente de un integrante
             registrarNuevoConocimiento(id, datos);
             for (int j = 0; j < integ.length; j++) {
                 buscarCedulas3(id, integ[j]);
             }
+            //registrarNuevoConocimiento(id, datos);
         }
     }
 
     public Long obtenerId3() {
         Long next = 0L;
-        String sql = "SELECT max(idconocimiento) FROM nuevo_conocimiento";
+        String sql = "SELECT max(idconocimiento) from nuevo_conocimiento";
         try {
             rs = s.executeQuery(sql);
             while (rs.next()) {
                 next = rs.getLong(1);
-                System.out.println("Entro serial n. conocimiento");
+                System.out.println("Entro nextval conocimiento");
             }
-            next+=1; //sumo 1 
         } catch (Exception e) {
-            System.out.println("Problema al traer el serial conocimiento " + e.getMessage());
+            System.out.println("Problema al traer el nextval conocimiento " + e.getMessage());
         } finally {
             try {
                 if (rs != null) {
@@ -637,7 +635,7 @@ public class ProyectoDAO {
         registrarNCAutor(aux, cedula);
     }
 
-public void registrarNuevoConocimiento(Long next, String infoC[]) {
+    public void registrarNuevoConocimiento(Long next, String infoC[]) {
         int z = 0;
         try {
             z = s.executeUpdate("INSERT INTO nuevo_conocimiento "
@@ -660,26 +658,27 @@ public void registrarNuevoConocimiento(Long next, String infoC[]) {
                     +"num_fasciculo,"
                     +"pagina_inicial,"
                     +"pagina_final,"
-                    +"urrl) values "
-                    + "(" + next + ","       //idconocimiento
-                    + "'" + infoC[0] + "',"  //tipo producto
-                    + "'" + infoC[1] + "',"  //publindex (clas2)
-                    + "'" + infoC[2] + "',"  //nomb prod
-                    + "'" + infoC[4] + "',"  //nmb revista
-                    + "'" + infoC[5] + "',"  //nmb libro
-                    + "'" + infoC[6] + "',"  //volumen
-                    + "'" + infoC[7] + "',"  //serie
-                    + "'" + infoC[8] + "',"  //año
-                    + "'" + infoC[9] + "',"  //editorial
-                    + "'" + infoC[10] + "',"  //cuartil (clasnn)
-                    + "'" + infoC[11] + "',"  //isbn
-                    + "'" + infoC[12] + "',"  //pais
-                    + "'" + infoC[13] + "',"  //ciudad
-                    + "'" + infoC[14] + "',"  //estado producto
-                    + "'" + infoC[15] + "',"  //n° fascicul
-                    + "'" + infoC[16] + "',"  //pag ini
-                    + "'" + infoC[17] + "',"  //pag final
-                    + "'" + infoC[18] + "')"); //url
+                    +"urrl"
+                    + ") values "
+                    + "(" + next + ","
+                    + "'" + infoC[0] + "',"
+                    + "'" + infoC[1] + "',"
+                    + "'" + infoC[2] + "',"
+                    + "'" + infoC[4] + "',"
+                    + "'" + infoC[5] + "',"
+                    + "'" + infoC[6] + "',"
+                    + "'" + infoC[7] + "',"
+                    + "'" + infoC[8] + "',"
+                    + "'" + infoC[9] + "',"
+                    + "'" + infoC[10] + "',"
+                    + "'" + infoC[11] + "',"
+                    + "'" + infoC[12] + "',"
+                    + "'" + infoC[13] + "',"
+                    + "'" + infoC[14] + "',"
+                    + "'" + infoC[15] + "',"
+                    + "'" + infoC[16] + "',"
+                    + "'" + infoC[17] + "',"
+                    + "')");
 
             if (z == 1) {
                 System.out.println("Se ha registrado el nuevo. cono");
@@ -710,8 +709,8 @@ public void registrarNuevoConocimiento(Long next, String infoC[]) {
         String[] filas = infoTrab.split(">>");
         for (int i = 0; i < filas.length; i++) {
             String[] datos = filas[i].split(";;");
-            String integ = datos[2];        //obtengo el nombre del orientador
-            buscarCedula4(integ, datos);    //busco la cedula
+            String integ = datos[3];
+            buscarCedula4(integ, datos);
         }
     }
 
@@ -737,7 +736,7 @@ public void registrarNuevoConocimiento(Long next, String infoC[]) {
                 System.out.println("Problema cerrar resulset ced. trab. " + e.getMessage());
             }
         }
-        registrarTrabajo(cedula, aux); //envio la cedula y datos del trabajo
+        registrarTrabajo(cedula, aux);
     }
 
     public void registrarTrabajo(String ced, String[] tra) {
@@ -745,8 +744,10 @@ public void registrarNuevoConocimiento(Long next, String infoC[]) {
         System.out.println("Cedula-->" + ced + " Trabajo-->" + tra.length);
         try {
             z = s.executeUpdate("INSERT INTO trabajos "
-                    + "(tipo_producto,"
+                    + "(idtrabajo,"
+                    + "tipo_producto,"
                     + "nombre_producto,"
+                    + "orientador,"
                     + "estudiante_orientado,"
                     + "categoria,"
                     + "institucion,"
@@ -755,8 +756,10 @@ public void registrarNuevoConocimiento(Long next, String infoC[]) {
                     + "fecha_inicio,"
                     + "fecha_termina,"
                     + "cedula) VALUES "
-                    + "('" + tra[0] + "',"
+                    + "(secuencia_trabajo.nextval,"
+                    + "'" + tra[0] + "',"
                     + "'" + tra[1] + "',"
+                    + "'" + tra[2] + "',"
                     + "'" + tra[3] + "',"
                     + "'" + tra[4] + "',"
                     + "'" + tra[5] + "',"
@@ -765,45 +768,41 @@ public void registrarNuevoConocimiento(Long next, String infoC[]) {
                     + "'" + tra[8] + "',"
                     + "'" + tra[9] + "',"
                     + "'" + ced + "')");
-            if (z==1) {
-                System.out.println("Se ha registrado correctamente el trabajo ");
-            }
         } catch (Exception e) {
             System.out.println("Problema registrar el trabajo con el orientador " + e.getMessage());
         }
+
     }
-//**************************************************************************************************************
+
     public void procesarDesarrolloTecn(String cadenaDT) {
         String[] filas = cadenaDT.split(">>");
         for (int i = 0; i < filas.length; i++) {
             String[] datos = filas[i].split(";;");
             String[] integ = datos[3].split(","); //al momento de registrar varios autores deben de separarlos por ,
-            System.out.println("Integrantes DT-->" + datos[3]);
-            Long id = obtenerSerial();  //sumar 1               //y coincider el nombre exactamente con el ingresado anteriormente de un integrante
+            System.out.println("Integrantes NC-->" + datos[3]);
+            Long id = obtenerSerial("idtecnologico"); //sumar 1               //y coincider el nombre exactamente con el ingresado anteriormente de un integrante
             registrarDesarrolloTecn(id, datos);
             for (int j = 0; j < integ.length; j++) {
-                buscarCedulas4(id, integ[j]);
+                buscarCedulas3(id, integ[j]);
             }
             //registrarNuevoConocimiento(id, datos);
         }
     }
 
-    public Long obtenerSerial() {
+    public Long obtenerSerial(String serial) {
         Long id = 0L;
-        String sql = "SELECT max(idtecnologico) from desarrollo_tecnologico"; //sumar 1 a el valor que llega
+        String sql = "SELECT CURRVAL('" + serial + "')"; //sumar 1 a el valor que llega (creo) postgesql
         try {
             rs = s.executeQuery(sql);
             while (rs.next()) {
                 id = rs.getLong(1);
             }
-            id+=1; //sumo 1
             try {
                 if (rs != null) {
                     rs.close();
                     System.out.println("Cerrado serial id");
                 }
             } catch (Exception e) {
-                System.out.println("Problema cerrar rs get serial "+e.getMessage());
             }
         } catch (SQLException e) {
             System.out.println("Problema consulta " + e.getMessage());
@@ -823,7 +822,7 @@ public void registrarNuevoConocimiento(Long next, String infoC[]) {
                     + "year_get,"
                     + "pais,"
                     + "gaceta) values "
-                    + "(" +  id  + ","
+                    + "(" + id + ","
                     + "'" + datos[0] + "',"
                     + "'" + datos[1] + "',"
                     + "'" + datos[2] + "'," //posicion 3 son autores
@@ -840,7 +839,7 @@ public void registrarNuevoConocimiento(Long next, String infoC[]) {
     }
 
     public void buscarCedulas4(Long id, String integrante) {
-        String sql = "SELECT cedula FROM integrantes WHERE nombre='" + integrante + "'";
+        String sql = "SELECT CEDULA FROM integrantes WHERE nombre='" + integrante + "'";
         String cedula = "";
         Long aux = id;
         try {
@@ -855,10 +854,10 @@ public void registrarNuevoConocimiento(Long next, String infoC[]) {
             try {
                 if (rs != null) {
                     rs.close();
-                    System.out.println("Resulset cerrado cédula tecn");
+                    System.out.println("Resulset cerrado cédula cono");
                 }
             } catch (Exception e) {
-                System.out.println("Problema cerrar resulset ced. tecn. " + e.getMessage());
+                System.out.println("Problema cerrar resulset ced. cono. " + e.getMessage());
             }
         }
         registrarDesarrolloAutor(aux, cedula);
@@ -867,7 +866,7 @@ public void registrarNuevoConocimiento(Long next, String infoC[]) {
     public void registrarDesarrolloAutor(Long idt, String ced) {
         int z = 0;
         try {
-            z = s.executeUpdate("INSERT INTO autores_desarrollot "
+            z = s.executeUpdate("INSERT INTO autores_desarrollo# "
                     + "(idtecnologico,"
                     + "cedula) VALUES "
                     + "(" + idt + ","

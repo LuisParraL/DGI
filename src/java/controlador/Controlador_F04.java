@@ -11,6 +11,7 @@ import dao.ProyectoDAO;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Edwin Rubiano
  */
+@WebServlet(name = "Controlador_F04", urlPatterns = {"/Grupos"})
 public class Controlador_F04 extends HttpServlet {
 
     /**
@@ -45,6 +47,7 @@ public class Controlador_F04 extends HttpServlet {
         String infoTrab = request.getParameter("infoTrabajos");
         String infoPonente = request.getParameter("infoPonente");
         String infoConocimiento = request.getParameter("infoCono");
+        String infoDT = request.getParameter("infoDesarrolloT");
         String infoConvo = request.getParameter("infoConvo");
         String codigo_grupo = request.getParameter("datos_formato");
         String actualizar_Gp = request.getParameter("actualizar_Gp");
@@ -54,9 +57,10 @@ public class Controlador_F04 extends HttpServlet {
         String insertar_DT = request.getParameter("insertar_Dt");
         String insertar_PAS = request.getParameter("insertar_PAS");
         String insertar_PRH = request.getParameter("insertar_PRH");
+        String insertar_Py = request.getParameter("insertar_Py");
         String nombres_integrantes = request.getParameter("nm_integrantes");
         String usuario = request.getParameter("usuario");
-        String json, json_1, json_2, json_3, json_4, json_5, json_6 = "[]", d_grupo[], d_lider[], d_integrantes[];
+        String json, json_1, json_2, json_3, json_4, json_5="[]", json_6 = "[]", d_grupo[], d_lider[], d_integrantes[], codigo;
 
         objGrupo = new GrupoDAO();
         objProyecto = new ProyectoDAO();
@@ -89,6 +93,22 @@ public class Controlador_F04 extends HttpServlet {
                     }
                 }
             }
+            
+            if(!"".equals(insertar_NC)){
+                objGrupo.procesarNuevoConocimiento(insertar_NC);
+            }
+            if(!"".equals(insertar_DT)){
+                objGrupo.procesarDesarrolloTecn(insertar_DT);
+            }
+            if(!"".equals(insertar_PAS)){
+                objGrupo.procesarEventosGeneral(insertar_PAS);
+            }
+            if(!"".equals(insertar_PRH)){
+                objGrupo.procesarTrabajos(insertar_PRH);
+            }
+            if(!"".equals(insertar_Py)){
+                objGrupo.procesarProyecto(insertar_Py);
+            }
             response.getWriter().write("ACTUALIZADO");
         }
 
@@ -107,7 +127,7 @@ public class Controlador_F04 extends HttpServlet {
             json_3 = new Gson().toJson(datos_trabajos);
             json_4 = new Gson().toJson(datos_productosB);
             //json_5 = new Gson().toJson(datos_Eventos);
-            response.getWriter().write("[" + json_1 + "," + json + "," + json_2 + "," + json_4 + "," + json_6 + "," +"[]" + "," + json_3 + "]");
+            response.getWriter().write("[" + json_1 + "," + json + "," + json_2 + "," + json_4 + "," + json_6 + "," + json_5 + "," + json_3 + "]");
         }
 
         if (infoGrupo != null && infoLider != null && infoIntegrantes != null && infoProyectos != null && infoTrab != null && infoPonente != null && infoConocimiento != null && infoConvo != null) {
@@ -122,14 +142,16 @@ public class Controlador_F04 extends HttpServlet {
             System.out.println("Nuevo Conocimiento-->" + infoConocimiento);
             objGrupo = new GrupoDAO(d_grupo[0]);
             objGrupo.registrarGrupo(infoGrupo);
-            objGrupo.registrarLider(d_lider[0], d_lider[1], d_integrantes[0]);
+            String [] datos_lider=infoLider.split(";;");
+            String [] datos_Integrantes = infoIntegrantes.split(">>");
+            objGrupo.registrarLider(datos_lider[0], datos_lider[1],datos_Integrantes[0]);
             objGrupo.procesarIntegrantes(infoIntegrantes);
-//            objProyecto.procesarProyecto(infoProyectos);
-//            objProyecto.procesarTrabajos(infoTrab);
-//            objProyecto.procesarEventosGeneral(infoPonente);
-//            objProyecto.procesarNuevoConocimiento(infoConocimiento);
-            //objProyecto.procesarDesarrolloTecn();
-            //objProyecto.procesarConvo(infoConvo);
+            objGrupo.procesarProyecto(infoProyectos);
+            objGrupo.procesarTrabajos(infoTrab);
+            objGrupo.procesarEventosGeneral(infoPonente);
+            objGrupo.procesarNuevoConocimiento(infoConocimiento);
+            objGrupo.procesarDesarrolloTecn(infoDT);
+
             response.getWriter().write("[+------------------+]");
         }
 

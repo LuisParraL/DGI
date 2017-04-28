@@ -1,7 +1,7 @@
 <%-- 
     Document   : login
     Created on : 11/04/2017, 07:49:43 AM
-    Author     : Sandra
+    Author     : Luis Parra
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -9,15 +9,15 @@
 <html>
 
     <head>
-        <link href="http://investigaciones.unillanos.edu.co/images/favicon.ico" rel="Shortcut Icon" />
+        <link href="Imagenes/favicon.ico" rel="Shortcut Icon" />
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link rel="stylesheet" href="materialize/css/materialize.min.css">
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>      
         <title>Iniciar Sesión</title>
     </head>
 
-    <body class="grey lighten-2">
+    <body class="grey lighten-2" onload="deshabilitaRetroceso();">
         <main>
             <center>
 
@@ -64,7 +64,15 @@
                 </div>
             </center>
         </main>
-
+        <script>
+            function deshabilitaRetroceso() {
+                window.location.hash = "no-back-button";
+                window.location.hash = "Again-No-back-button" //chrome
+                window.onhashchange = function () {
+                window.location.hash = "no-back-button";
+                }
+            }
+        </script>
         <script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
         <script type="text/javascript" src="materialize/js/materialize.min.js"></script>
     </body>
